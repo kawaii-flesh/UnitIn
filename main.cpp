@@ -5,12 +5,14 @@
 
 using namespace std;
 
-bool pass_strong(string pass, string)
+bool pass_strong(string pass, string wrong)
 {
     bool result = true;
     if(pass.size() < 8)
         result &= false;
     if(pass.find("@") == string::npos)
+        result &= false;
+    if(pass == wrong)
         result &= false;
     return result;
 }
@@ -24,13 +26,13 @@ int main()
 {
     vector<pair<bool, vector<any>>> cases
     {
-        make_pair(false, vector<any>{"12345678", ""}),
-        make_pair(false, vector<any>{"12345678", ""}),
-        make_pair(false, vector<any>{"pass@", ""}),
-        make_pair(true, vector<any>{"1@345678", ""})
+        make_pair(false, vector<any>{"12345678", "qwerty123"}),
+        make_pair(false, vector<any>{"12345678", "qwerty123"}),
+        make_pair(false, vector<any>{"pass@", "qwerty123"}),
+        make_pair(true, vector<any>{"1@345678", "qwerty123"}),
+        make_pair(true, vector<any>{"qwerty123", "qwerty123"})
     };
-    UnitIn<bool, string, string> test(pass_strong, wrapper_pass_strong, cases);
-    test.run_test();
-    cout << (test.is_passed() ? "Passed!" : "Not passed!") << endl;
+    UnitIn<bool, string, string> test(pass_strong, wrapper_pass_strong, cases, "bool pass_strong(string, string): main.cpp");
+    test.run_test(true);
     return 0;
 }
