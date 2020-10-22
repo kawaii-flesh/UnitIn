@@ -22,7 +22,7 @@ public:
     // a_wrapper - wrapper function(pointer)
     // the type of wrapper must be:
     // bool (*)(TF type, pair<TF return type, vector<any>) TF - test function
-    explicit UnitIn(RT (*a_func)(TFVT ...), bool (*a_wrapper)(RT (*)(TFVT ...), pair<RT, vector<any>>), vector<pair<RT, vector<any>>> &a_cases, string a_test_name = "UnitIn") :
+    explicit UnitIn(RT (*a_func)(TFVT ...), bool (*a_wrapper)(RT (*)(TFVT ...), pair<RT, vector<any>>), vector<pair<RT, vector<any>>> &a_cases, string &&a_test_name = "UnitIn") :
         m_func(a_func), m_wrapper(a_wrapper), m_cases(a_cases), m_passed(false), m_test_name(a_test_name){}
     vector<pair<bool, pair<RT, vector<any>>>> run_test(bool = false);
     vector<pair<RT, vector<any>>> &get_cases(){return m_cases;}
