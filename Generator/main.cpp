@@ -5,6 +5,14 @@
 
 using namespace std;
 
+//start_needed
+class A
+{
+	int a;
+	int b;
+};
+//end_needed
+
 //unitin:f:adder
 //1,2:3
 //2,-1:1
@@ -17,7 +25,9 @@ int adder(const int a, const int b)
 
 int main(int argc, char** argv)
 {
+	//start_needed
 	unsigned int n;
+	//end_needed
 	cout << "Enter n: ";
 	cin >> n;
 	double *arr = new double[n];
