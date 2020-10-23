@@ -25,7 +25,6 @@ def generate_test(test_type, func_name, cases, code):
         wrapper += ["            any_cast<" + func_at_l[j] + ">(i.second[" + str(j) + "]),\n"]
     wrapper[-1] = wrapper[-1][:-2] + ");\n"
     wrapper += ["        result &= ret == i.first;\n"]
-    #cout << "Test [" << i << "] - " << (result ? "Good!\n" : "Bad!\n");
     bstr = ""
     for j in range(0, len(func_at_l)):
         bstr += "any_cast<" + func_at_l[j] + ">(i.second[" + str(j) + "]) << " + '", " << '
@@ -45,6 +44,7 @@ source = open(sys.argv[1], "r")
 headers = ["#include <vector>\n", "#include <any>\n", "#include <utility>\n"]
 namespaces = ["using namespace std;\n"]
 lines = source.readlines()
+classes = []
 
 i = 0
 while i < len(lines):
@@ -52,6 +52,13 @@ while i < len(lines):
         headers += [lines[i]]
     elif "using namespace" in lines[i]:
         namespaces += [lines[i]]
+    elif "//start_class" in lines[i]:
+        i += 1
+        while not ("//end_class" in lines[i]):
+            classes += [lines[i]]
+            i += 1
+        classes += ["\n"]
+        i += 1
     if "//unitin:" in lines[i]:
         test_type = lines[i][lines[i].find(':') + 1:lines[i].rfind(':')]
         func_name = lines[i][lines[i].rfind(':') + 1:len(lines[i]) - 1]
@@ -72,9 +79,10 @@ while i < len(lines):
         output_file_data = headers + ["\n"]
         namespaces = list(set(namespaces))
         output_file_data += namespaces + ["\n"]
+        output_file_data += classes
         output_file_data += code + ["\n"]
         output_file_data += ["int main(int argc, char *argv[])\n{\n"] + b[0] + b[1] + ["    return 0;\n}\n"]
 
-        file_out = open("ut_" + func_name + "(" + sys.argv[1] + ":" + str(file_line) + ").cpp", 'w')
+        file_out = open("ut_" + func_name + "_" + str(file_line) + "_" + sys.argv[1] + ".cpp", 'w')
         file_out.writelines(output_file_data)
     i += 1
