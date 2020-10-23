@@ -17,7 +17,7 @@ def generate_test(test_type, func_name, cases, code):
         cases_l += ["        make_pair(" + i[i.rfind(':') + 1: -1] + ", vector<any>{" + i[:i.rfind(':')] + "}),\n"]
     cases_l[-1] = (cases_l[-1][:-2] + "\n    };\n\n")
     wrapper = []
-    wrapper += ["    bool result = true;\n    int j = 0;"]
+    wrapper += ["    bool result = true;\n    int j = 0;\n"]
     wrapper += ["    for(pair<" + func_rt[:-1] + ", vector<any>> i : cases_" + func_name + ")\n    {\n"]
     wrapper += ["        " + func_rt + " ret = "]
     wrapper += [func_name + "(\n"]
@@ -44,7 +44,7 @@ source = open(sys.argv[1], "r")
 headers = ["#include <vector>\n", "#include <any>\n", "#include <utility>\n"]
 namespaces = ["using namespace std;\n"]
 lines = source.readlines()
-classes = []
+needed = []
 
 i = 0
 while i < len(lines):
@@ -52,12 +52,12 @@ while i < len(lines):
         headers += [lines[i]]
     elif "using namespace" in lines[i]:
         namespaces += [lines[i]]
-    elif "//start_class" in lines[i]:
+    if "//start_needed" in lines[i]:
         i += 1
-        while not ("//end_class" in lines[i]):
-            classes += [lines[i]]
+        while not ("//end_needed" in lines[i]):
+            needed += [lines[i]]
             i += 1
-        classes += ["\n"]
+        needed += ["\n"]
         i += 1
     if "//unitin:" in lines[i]:
         test_type = lines[i][lines[i].find(':') + 1:lines[i].rfind(':')]
@@ -74,15 +74,15 @@ while i < len(lines):
             code += [lines[i]]
             i += 1
         b = generate_test(test_type, func_name, cases, code)
-
-        headers = list(set(headers))
-        output_file_data = headers + ["\n"]
-        namespaces = list(set(namespaces))
-        output_file_data += namespaces + ["\n"]
-        output_file_data += classes
-        output_file_data += code + ["\n"]
-        output_file_data += ["int main(int argc, char *argv[])\n{\n"] + b[0] + b[1] + ["    return 0;\n}\n"]
-
-        file_out = open("ut_" + func_name + "_" + str(file_line) + "_" + sys.argv[1] + ".cpp", 'w')
-        file_out.writelines(output_file_data)
     i += 1
+
+headers = list(set(headers))
+output_file_data = headers + ["\n"]
+namespaces = list(set(namespaces))
+output_file_data += namespaces + ["\n"]
+output_file_data += needed
+output_file_data += code + ["\n"]
+output_file_data += ["int main(int argc, char *argv[])\n{\n"] + b[0] + b[1] + ["    return 0;\n}\n"]
+
+file_out = open("ut_" + func_name + "_" + str(file_line) + "_" + sys.argv[1] + ".cpp", 'w')
+file_out.writelines(output_file_data)
