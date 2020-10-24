@@ -7,7 +7,6 @@ def generate_test(test_type, func_name, cases, code, log_type):
     if "m" in test_type:
         m_op = test_type[test_type.find('(')+1:test_type.rfind(')')].split(';')
         class_name = m_op[0] + "::"
-        print(m_op)
 
     func_rt = code[0][:code[0].find(class_name + func_name if "m" in test_type else func_name)] # return type
     func_at = code[0][code[0].find(class_name + func_name if "m" in test_type else func_name + '(')
@@ -91,7 +90,6 @@ while i < len(lines):
             cases += [lines[i][2:]]
             i += 1
         i += 1
-        file_line = i + 1
         while not ("//end_code" in lines[i]):
             code += [lines[i]]
             i += 1
@@ -105,7 +103,7 @@ while i < len(lines):
         output_file_data += code + ["\n"]
         output_file_data += ["int main(int argc, char *argv[])\n{\n"] + b[0] + b[1] + ["    return 0;\n}\n"]
 
-        file_out = open("ut_" + func_name + "_" + str(file_line) + "_" + sys.argv[1] + ".cpp", 'w')
+        file_out = open("ut_" + func_name + "_" + sys.argv[1] + ".cpp", 'w')
         file_out.writelines(output_file_data)
     i += 1
     
