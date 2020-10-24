@@ -10,10 +10,34 @@ class A
 {
 	int a;
 	int b;
+public:
+    A(int aa, int ab) : a(aa), b(ab){}
+    int sum(int);
 };
 //end_needed
 
-//unitin:f:adder
+/*m(A;A a = A(1,2);a.)
+[A] - Class name
+[A a = A(1,2)] - Initialization instance
+[a.] - How to call a method
+*/
+//unitin:m(A;A a = A(1,2);a.):sum:ar
+//2:5
+//3:6
+//-3:0
+//end_cases
+int A::sum(int n)
+{
+    return a + b + n;
+}
+//end_code
+
+/*[//unitin] - key word
+[f] - type(f - function, m - method)
+[adder] - test function/method name
+[or] - log type(or - only results, ar - arguments, results)
+*/
+//unitin:f:adder:ar
 //1,2:3
 //2,-1:1
 //end_cases
