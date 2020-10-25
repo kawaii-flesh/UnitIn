@@ -17,18 +17,18 @@ def generate_test(test_type, func_name, cases, code, log_type):
             func_at_l += [i]
         else:
             func_at_l += [i[:i.rfind(' ')]]
-    cases_l = ["    vector<pair<" + func_rt[:-1] + ", vector<any>>> cases_" + func_name + '\n    {\n']
+    cases_l = ["    std::vector<std::pair<" + func_rt[:-1] + ", std::vector<std::any>>> cases_" + func_name + '\n    {\n']
     for i in cases:
-        cases_l += ["        make_pair(" + i[i.rfind(':') + 1: -1] + ", vector<any>{" + i[:i.rfind(':')] + "}),\n"]
+        cases_l += ["        std::make_pair(" + i[i.rfind(':') + 1: -1] + ", std::vector<std::any>{" + i[:i.rfind(':')] + "}),\n"]
     if len(cases) == 0:
         cases_l[-1] = cases_l[-1][:-1] + "};\n"
     else:
         cases_l[-1] = (cases_l[-1][:-2] + "\n    };\n\n")
-    wrapper = []
+    wrapper = ['\n    std::cout << "Start test: ' + func_rt + (class_name + func_name if "m" in test_type else func_name) + '(' + func_at + ')" << std::endl;\n']
     wrapper += ["    bool result = true;\n    int j = 0;\n"]
     if "m" in test_type:
         wrapper += ["    " + m_op[1] + ";\n"]
-    wrapper += ["    for(pair<" + func_rt[:-1] + ", vector<any>> i : cases_" + func_name + ")\n    {\n"]
+    wrapper += ["    for(std::pair<" + func_rt[:-1] + ", std::vector<std::any>> i : cases_" + func_name + ")\n    {\n"]
     wrapper += ["        " + func_rt + " ret = "]    
     wrapper += [m_op[2] + func_name + "(" if "m" in test_type else "" + func_name + "("]
     for j in range(0, len(func_at_l)):        
@@ -37,20 +37,20 @@ def generate_test(test_type, func_name, cases, code, log_type):
                 wrapper += ["("]
                 break
             continue
-        wrapper += ["            any_cast<" + func_at_l[j] + ">(i.second[" + str(j) + "]),\n"]
+        wrapper += ["            std::any_cast<" + func_at_l[j] + ">(i.second[" + str(j) + "]),\n"]
     wrapper[-1] = wrapper[-1][:-2] + ");\n"
     wrapper += ["        result &= ret == i.first;\n"]
     bstr = ""
     for j in range(0, len(func_at_l)):
-        bstr += "any_cast<" + func_at_l[j] + ">(i.second[" + str(j) + "]) << " + '", " << '
+        bstr += "std::any_cast<" + func_at_l[j] + ">(i.second[" + str(j) + "]) << " + '", " << '
     bstr = bstr[:-8]
     cstr = ""
     if("or" in log_type):
-        wrapper += ['        cout << "Test [" << j << "]: - " << (result ? "Good!" : "Bad!") << endl;\n']
+        wrapper += ['        std::cout << "Test [" << j << "]: - " << (result ? "Good!" : "Bad!") << std::endl;\n']
     else:
-        wrapper += ['        cout << "Test [" << j << "]: (" << ' + bstr + '") -> " << i.first << " actually = " << ret << " - " << (result ? "Good!" : "Bad!") << endl;\n']
+        wrapper += ['        std::cout << "Test [" << j << "]: (" << ' + bstr + '") -> " << i.first << " actually = " << ret << " - " << (result ? "Good!" : "Bad!") << std::endl;\n']
     wrapper += ["        ++j;\n    }\n"]
-    wrapper += ['\n    cout << "' + func_rt + (class_name + func_name if "m" in test_type else func_name) + '(' + func_at + ')" << (result ? " - Passed!" : " - Failed!") << endl;\n\n']
+    wrapper += ['\n    std::cout << "' + func_rt + (class_name + func_name if "m" in test_type else func_name) + '(' + func_at + ')" << (result ? " - Passed!" : " - Failed!") << std::endl;\n\n']
     return [cases_l, wrapper]
 
 if len(sys.argv) < 2:
@@ -60,7 +60,7 @@ if len(sys.argv) < 2:
 source = open(sys.argv[1], "r")
 
 headers = ["#include <vector>\n", "#include <any>\n", "#include <utility>\n"]
-namespaces = ["using namespace std;\n"]
+namespaces = []
 lines = source.readlines()
 needed = []
 
@@ -103,7 +103,7 @@ while i < len(lines):
         output_file_data += code + ["\n"]
         output_file_data += ["int main(int argc, char *argv[])\n{\n"] + b[0] + b[1] + ["    return 0;\n}\n"]
 
-        file_out = open("ut_" + func_name + "_" + sys.argv[1] + ".cpp", 'w')
+        file_out = open("ut_" + func_name + "_" + sys.argv[1] + "_.cpp", 'w')
         file_out.writelines(output_file_data)
     i += 1
     
