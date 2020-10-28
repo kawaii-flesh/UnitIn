@@ -101,7 +101,7 @@ while i < len(lines):
         output_file_data += namespaces + ["\n"]
         output_file_data += needed
         output_file_data += code + ["\n"]
-        output_file_data += ["int main(int argc, char *argv[])\n{\n"] + b[0] + b[1] + ["    return 0;\n}\n"]
+        output_file_data += ["int main(int argc, char *argv[])\n{\n"] + b[0] + b[1] + ["    return !result;\n}\n"]
 
         file_out = open("ut_" + func_name + "_" + sys.argv[1] + "_.cpp", 'w')
         file_out.writelines(output_file_data)
