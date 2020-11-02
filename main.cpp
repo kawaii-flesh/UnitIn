@@ -30,7 +30,7 @@ int main()
         make_pair(false, vector<any>{"12345678", "qwerty123"}),
         make_pair(false, vector<any>{"pass@", "qwerty123"}),
         make_pair(true, vector<any>{"1@345678", "qwerty123"}),
-        make_pair(true, vector<any>{"qwerty123", "qwerty123"})
+        make_pair(true, vector<any>{"qwerty123", "qwerty123"}) // wrong
     };
     UnitIn<bool, string, string> test(pass_strong, wrapper_pass_strong, cases, "bool pass_strong(string, string): main.cpp");
     test.run_test(true);

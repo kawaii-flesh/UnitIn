@@ -1,3 +1,6 @@
+#ifndef UNITIN_HPP
+#define UNITIN_HPP
+
 #include <vector>
 #include <utility>
 #include <any>
@@ -48,3 +51,5 @@ vector<pair<bool, pair<RT, vector<any>>>> UnitIn<RT, TFVT ...>::run_test(bool co
         cout << m_test_name << (m_passed ? " - Passed!\n" : " - Failed!\n");
     return tests;
 }
+
+#endif
